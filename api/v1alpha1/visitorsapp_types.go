@@ -28,14 +28,23 @@ type VisitorsAppSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of VisitorsApp. Edit visitorsapp_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Number of backend replicas to create
+	Size int32 `json:"size"`
+
+	// The text to display on the frontend web page
+	Title string `json:"title"`
 }
 
 // VisitorsAppStatus defines the observed state of VisitorsApp
 type VisitorsAppStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// Indicates the image and version used to deploy the backend pods
+	BackendImage string `json:"backendImage"`
+
+	// Indicates the image and version used to deploy the frontend pod
+	FrontendImage string `json:"frontendImage"`
 }
 
 //+kubebuilder:object:root=true

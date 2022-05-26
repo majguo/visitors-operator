@@ -25,6 +25,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	appsv1alpha1 "github.com/majguo/visitors-operator/api/v1alpha1"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // VisitorsAppReconciler reconciles a VisitorsApp object
@@ -58,5 +60,8 @@ func (r *VisitorsAppReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 func (r *VisitorsAppReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&appsv1alpha1.VisitorsApp{}).
+		Owns(&appsv1.Deployment{}).
+		Owns(&corev1.Service{}).
+		Owns(&corev1.Secret{}).
 		Complete(r)
 }
