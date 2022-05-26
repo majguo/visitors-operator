@@ -6,4 +6,14 @@ plugins:
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: visitors-operator
 repo: github.com/majguo/visitors-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: example.com
+  group: apps
+  kind: VisitorsApp
+  path: github.com/majguo/visitors-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"
