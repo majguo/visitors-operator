@@ -38,6 +38,10 @@ type VisitorsAppReconciler struct {
 //+kubebuilder:rbac:groups=apps.example.com,resources=visitorsapps,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=apps.example.com,resources=visitorsapps/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=apps.example.com,resources=visitorsapps/finalizers,verbs=update
+//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list
+//+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
