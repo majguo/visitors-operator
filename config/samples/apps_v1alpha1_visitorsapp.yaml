@@ -3,4 +3,5 @@ kind: VisitorsApp
 metadata:
   name: visitorsapp-sample
 spec:
-  # TODO(user): Add fields here
+  size: 3
+  title: "Custom Dashboard Title"
