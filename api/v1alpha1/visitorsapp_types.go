@@ -28,7 +28,7 @@ type VisitorsAppSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Number of backend replicas to create
+	// Number of backend and frontend replicas to create
 	Size int32 `json:"size"`
 
 	// The text to display on the frontend web page
@@ -43,7 +43,7 @@ type VisitorsAppStatus struct {
 	// Indicates the image and version used to deploy the backend pods
 	BackendImage string `json:"backendImage"`
 
-	// Indicates the image and version used to deploy the frontend pod
+	// Indicates the image and version used to deploy the frontend pods
 	FrontendImage string `json:"frontendImage"`
 }
 
