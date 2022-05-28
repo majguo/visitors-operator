@@ -12,6 +12,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
+const mysqlPort = 3306
+const mysqlDBName = "visitors_db"
+const mysqlUsernameKey = "username"
+const mysqlPasswordKey = "password"
+
 func mysqlDeploymentName(v *appsv1alpha1.VisitorsApp) string {
 	return v.Name + "-mysql"
 }
@@ -32,8 +37,8 @@ func (r *VisitorsAppReconciler) mysqlAuthSecret(v *appsv1alpha1.VisitorsApp) *co
 		},
 		Type: "Opaque",
 		StringData: map[string]string{
-			"username": "visitors-user",
-			"password": "visitors-pass",
+			mysqlUsernameKey: "visitors-user",
+			mysqlPasswordKey: "visitors-pass",
 		},
 	}
 	ctrl.SetControllerReference(v, secret, r.Scheme)
@@ -47,14 +52,14 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 	userSecret := &corev1.EnvVarSource{
 		SecretKeyRef: &corev1.SecretKeySelector{
 			LocalObjectReference: corev1.LocalObjectReference{Name: mysqlAuthName(v)},
-			Key:                  "username",
+			Key:                  mysqlUsernameKey,
 		},
 	}
 
 	passwordSecret := &corev1.EnvVarSource{
 		SecretKeyRef: &corev1.SecretKeySelector{
 			LocalObjectReference: corev1.LocalObjectReference{Name: mysqlAuthName(v)},
-			Key:                  "password",
+			Key:                  mysqlPasswordKey,
 		},
 	}
 
@@ -77,7 +82,7 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 						Image: "mysql:5.7",
 						Name:  "visitors-mysql",
 						Ports: []corev1.ContainerPort{{
-							ContainerPort: 3306,
+							ContainerPort: mysqlPort,
 							Name:          "mysql",
 						}},
 						Env: []corev1.EnvVar{
@@ -87,7 +92,7 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 							},
 							{
 								Name:  "MYSQL_DATABASE",
-								Value: "visitors_db",
+								Value: mysqlDBName,
 							},
 							{
 								Name:      "MYSQL_USER",
@@ -119,9 +124,9 @@ func (r *VisitorsAppReconciler) mysqlService(v *appsv1alpha1.VisitorsApp) *corev
 		Spec: corev1.ServiceSpec{
 			Selector: labels,
 			Ports: []corev1.ServicePort{{
-				Port: 3306,
+				Port: mysqlPort,
 			}},
-			Type: "ClusterIP",
+			Type: corev1.ServiceTypeClusterIP,
 		},
 	}
 
