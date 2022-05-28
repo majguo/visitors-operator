@@ -39,7 +39,6 @@ type VisitorsAppReconciler struct {
 //+kubebuilder:rbac:groups=apps.example.com,resources=visitorsapps/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=apps.example.com,resources=visitorsapps/finalizers,verbs=update
 //+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
 
@@ -66,6 +65,5 @@ func (r *VisitorsAppReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&appsv1alpha1.VisitorsApp{}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
-		Owns(&corev1.Secret{}).
 		Complete(r)
 }
