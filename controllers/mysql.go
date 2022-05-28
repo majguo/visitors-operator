@@ -12,10 +12,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
+const mysqlImageTag = "mysql:5.7"
 const mysqlPort = 3306
 const mysqlDBName = "visitors_db"
 const mysqlUsernameKey = "username"
 const mysqlPasswordKey = "password"
+const mysqlReplicas = 1
 
 func mysqlDeploymentName(v *appsv1alpha1.VisitorsApp) string {
 	return v.Name + "-mysql"
@@ -47,7 +49,7 @@ func (r *VisitorsAppReconciler) mysqlAuthSecret(v *appsv1alpha1.VisitorsApp) *co
 
 func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *appsv1.Deployment {
 	labels := labels(v, "mysql")
-	size := int32(1)
+	size := int32(mysqlReplicas)
 
 	userSecret := &corev1.EnvVarSource{
 		SecretKeyRef: &corev1.SecretKeySelector{
@@ -79,7 +81,7 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image: "mysql:5.7",
+						Image: mysqlImageTag,
 						Name:  "visitors-mysql",
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: mysqlPort,
@@ -87,8 +89,8 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 						}},
 						Env: []corev1.EnvVar{
 							{
-								Name:  "MYSQL_ROOT_PASSWORD",
-								Value: "password",
+								Name:  "MYSQL_ALLOW_EMPTY_PASSWORD",
+								Value: "1",
 							},
 							{
 								Name:  "MYSQL_DATABASE",
@@ -101,6 +103,23 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 							{
 								Name:      "MYSQL_PASSWORD",
 								ValueFrom: passwordSecret,
+							},
+						},
+						ReadinessProbe: &corev1.Probe{
+							InitialDelaySeconds: 10,
+							PeriodSeconds:       5,
+							TimeoutSeconds:      3,
+							SuccessThreshold:    1,
+							ProbeHandler: corev1.ProbeHandler{
+								Exec: &corev1.ExecAction{
+									Command: []string{
+										"mysql",
+										"-h",
+										"127.0.0.1",
+										"-e",
+										"SELECT 1",
+									},
+								},
 							},
 						},
 					}},
@@ -150,7 +169,7 @@ func (r *VisitorsAppReconciler) isMysqlUp(ctx context.Context, v *appsv1alpha1.V
 		return false
 	}
 
-	if deployment.Status.ReadyReplicas == 1 {
+	if deployment.Status.ReadyReplicas == mysqlReplicas {
 		return true
 	}
 
