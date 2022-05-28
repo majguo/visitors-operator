@@ -145,6 +145,7 @@ func (r *VisitorsAppReconciler) handleBackendChanges(ctx context.Context, v *app
 
 	if size != *found.Spec.Replicas {
 		found.Spec.Replicas = &size
+		logger.Info("Updating an existing backend Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name, "Spec.Replicas", size)
 		err = r.Update(context.TODO(), found)
 		if err != nil {
 			logger.Error(err, "Failed to update Deployment.", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
