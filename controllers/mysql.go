@@ -17,6 +17,7 @@ const mysqlPort = 3306
 const mysqlDBName = "visitors_db"
 const mysqlUsernameKey = "username"
 const mysqlPasswordKey = "password"
+const mysqlRootPasswordKey = "rootpassword"
 const mysqlReplicas = 1
 
 func mysqlDeploymentName(v *appsv1alpha1.VisitorsApp) string {
@@ -39,8 +40,9 @@ func (r *VisitorsAppReconciler) mysqlAuthSecret(v *appsv1alpha1.VisitorsApp) *co
 		},
 		Type: "Opaque",
 		StringData: map[string]string{
-			mysqlUsernameKey: "visitors-user",
-			mysqlPasswordKey: "visitors-pass",
+			mysqlUsernameKey:     "visitors-user",
+			mysqlPasswordKey:     "visitors-pass",
+			mysqlRootPasswordKey: "password",
 		},
 	}
 	ctrl.SetControllerReference(v, secret, r.Scheme)
@@ -50,6 +52,13 @@ func (r *VisitorsAppReconciler) mysqlAuthSecret(v *appsv1alpha1.VisitorsApp) *co
 func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *appsv1.Deployment {
 	labels := labels(v, "mysql")
 	size := int32(mysqlReplicas)
+
+	rootPasswordSecret := &corev1.EnvVarSource{
+		SecretKeyRef: &corev1.SecretKeySelector{
+			LocalObjectReference: corev1.LocalObjectReference{Name: mysqlAuthName(v)},
+			Key:                  mysqlRootPasswordKey,
+		},
+	}
 
 	userSecret := &corev1.EnvVarSource{
 		SecretKeyRef: &corev1.SecretKeySelector{
@@ -89,8 +98,8 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 						}},
 						Env: []corev1.EnvVar{
 							{
-								Name:  "MYSQL_ALLOW_EMPTY_PASSWORD",
-								Value: "1",
+								Name:      "MYSQL_ROOT_PASSWORD",
+								ValueFrom: rootPasswordSecret,
 							},
 							{
 								Name:  "MYSQL_DATABASE",
@@ -113,11 +122,13 @@ func (r *VisitorsAppReconciler) mysqlDeployment(v *appsv1alpha1.VisitorsApp) *ap
 							ProbeHandler: corev1.ProbeHandler{
 								Exec: &corev1.ExecAction{
 									Command: []string{
+										"/bin/sh",
+										"-c",
+										"MYSQL_PWD=\"${MYSQL_ROOT_PASSWORD}\"",
 										"mysql",
 										"-h",
 										"127.0.0.1",
-										"-e",
-										"SELECT 1",
+										"-e 'SELECT 1'",
 									},
 								},
 							},
