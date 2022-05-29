@@ -169,9 +169,5 @@ func (r *VisitorsAppReconciler) isMysqlUp(ctx context.Context, v *appsv1alpha1.V
 		return false
 	}
 
-	if deployment.Status.ReadyReplicas == mysqlReplicas {
-		return true
-	}
-
-	return false
+	return deployment.Status.ReadyReplicas == mysqlReplicas
 }
