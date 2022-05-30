@@ -47,8 +47,9 @@ func (r *VisitorsAppReconciler) frontendDeployment(v *appsv1alpha1.VisitorsApp) 
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image: frontendImage,
-						Name:  "visitors-webui",
+						Image:           frontendImage,
+						ImagePullPolicy: corev1.PullAlways,
+						Name:            "visitors-webui",
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: frontendPort,
 							Name:          "visitors",
