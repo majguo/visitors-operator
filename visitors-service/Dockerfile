@@ -1,3 +1,4 @@
+# specify python 3.8 due to version dependency
 FROM python:3.8
 
 EXPOSE 8000
