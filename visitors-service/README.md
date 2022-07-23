@@ -71,6 +71,38 @@ Follow steps below to stop server and quit the virtual environment.
    deactivate
    ```
 
+## Run server in Docker
+
+Containerize the application so that it can run as a contanier in Docker or Kubernetes cluster.
+
+### Build application image
+
+Change directory to `visitors-service`, then run the following commands to build a Docker image and push to DockerHub:
+
+```
+docker build -t visitors-service:1.0.0 .
+docker tag visitors-service:1.0.0 <DockerHub-account>/visitors-service:1.0.0
+docker push <DockerHub-account>/visitors-service:1.0.0
+```
+
+### Run as container
+
+Execute the command below to run the containerzed application in Docker.
+
+```
+docker run -it --rm -p 8000:8000 --name visitors-service visitors-service:1.0.0
+```
+
+Open `http://localhost:8000/visitors/` in the browser and you should see an empty array `[]` displayed in the page.
+
+## Stop the container
+
+To stop running the containerzed application, you can press `CONTROL-C` or execute the command below in a separate CLI.
+
+```
+docker stop visitors-service
+```
+
 ## References
 
 * [github.com/jdob/visitors-service](https://github.com/jdob/visitors-service)
