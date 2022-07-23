@@ -15,7 +15,7 @@ To run `visitors-webui` locally, following instructions below:
    ```
    export REACT_APP_BACKEND_HOST=localhost
    export REACT_APP_BACKEND_PORT=8000
-   export REACT_APP_TITLE="Test Visitors WebUI Title"
+   export REACT_APP_TITLE="Custom Dashboard Title"
    ```
 
 1. Install nvm, node.js, and npm by following instructions in [this guide](https://docs.microsoft.com/windows/dev-environment/javascript/nodejs-on-wsl#install-nvm-nodejs-and-npm). Once it's done, return here to continue.
@@ -39,7 +39,7 @@ To run `visitors-webui` locally, following instructions below:
    Server listening on the port::3000
    ``` 
 
-1. Open `http://localhost:3000/` in your browser to visit the app. You should see `Test Visitors WebUI Title` displayed in the web page. Refreshing the page and you will see one entry with `127.0.1.1` as **Service IP** and **Client IP** added to the table. 
+1. Open `http://localhost:3000/` in your browser to visit the app. You should see `Custom Dashboard Title` displayed in the web page. Refreshing the page and you will see one entry with `127.0.1.1` as **Service IP** and **Client IP** added to the table. 
 
 ## Stop server
 
@@ -70,10 +70,10 @@ As `visitors-webui` depends on `visitors-service`, you need to start `visitors-s
 Then execute the command below to run the containerzed `visitors-webui` application in Docker.
 
 ```
-docker run -it --rm -p 3000:3000 -e REACT_APP_BACKEND_HOST=172.17.0.2 -e REACT_APP_BACKEND_PORT=8000 -e REACT_APP_TITLE="Test Visitors WebUI Title" --name visitors-webui visitors-webui:1.0.0
+docker run -it --rm -p 3000:3000 -e REACT_APP_BACKEND_HOST=172.17.0.2 -e REACT_APP_BACKEND_PORT=8000 -e REACT_APP_TITLE="Custom Dashboard Title" --name visitors-webui visitors-webui:1.0.0
 ```
 
-Open `http://localhost:3000/` in your browser to visit the app. You should see `Test Visitors WebUI Title` displayed in the web page. Refreshing the page and you will see one entry with `172.17.0.2` as **Service IP** and `172.17.0.x` as **Client IP** added to the table. 
+Open `http://localhost:3000/` in your browser to visit the app. You should see `Custom Dashboard Title` displayed in the web page. Refreshing the page and you will see one entry with `172.17.0.2` as **Service IP** and `172.17.0.x` as **Client IP** added to the table. 
 
 ## Stop the container
 

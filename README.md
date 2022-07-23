@@ -6,10 +6,33 @@ Follow instructions below to deploy and run the Operator.
 
 ## Prerequisites
 
-TODO.
+You must complete the prerequisites listed here before moving on to next step.
 
-1. Deploy an AKS cluster.
-1. Prepare app images for [`visitors-webui`](./visitors-webui/) and [`visitors-service`](./visitors-service/).
+### Install Operator SDK
+
+If you haven't installed Operator SDK, pls install it from GitHub release by following [this guide](https://sdk.operatorframework.io/docs/installation/#install-from-github-release).
+
+After installation, run `operator-sdk version` in your CLI, you should see the similar output below:
+
+```
+operator-sdk version: "v1.22.2", commit: "da3346113a8a75e11225f586482934000504a60f", kubernetes version: "1.24.1", go version: "go1.18.4", GOOS: "linux", GOARCH: "amd64"
+```
+
+Otherwise, pls troubleshoot before returning here to continue.
+
+### Prepare application images
+
+The Visitors Operator will automatically deploy 3 kinds of servers consisting of [`visitors-webui`](./visitors-webui/), [`visitors-service`](./visitors-service/) and `mysql` underneath.
+
+Except `mysql` image, you need to prepare images for `visitors-webui` and `visitors-service`.
+
+1. Follow instructions in [build-visitors-webui-app-image](./visitors-webui/README.md#build-application-image) to generate and push `visitors-webui` image to DokcerHub.
+
+1. Follow instructions in [build-visitors-service-app-image](./visitors-service/README.md#build-application-image) to generate and push `visitors-service` image to DokcerHub.
+
+### Deploy an Azure Kubernetes Cluster
+
+TODO.
 
 ## Running operator from local
 
