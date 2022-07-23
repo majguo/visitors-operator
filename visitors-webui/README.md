@@ -49,9 +49,46 @@ Follow steps below to stop both frontend and backend server.
 
 1. Follow instructions in [Stop visitors-service server](../visitors-service/README.md#stop-server) to stop backend server.
 
-# References
+## Run server in Docker
+
+Containerize the application so that it can run as a contanier in Docker or Kubernetes cluster.
+
+### Build application image
+
+Change directory to `visitors-webui`, then run the following commands to build a Docker image and push to DockerHub:
+
+```
+docker build -t visitors-webui:1.0.0 .
+docker tag visitors-webui:1.0.0 <DockerHub-account>/visitors-webui:1.0.0
+docker push <DockerHub-account>/visitors-webui:1.0.0
+```
+
+### Run as container
+
+As `visitors-webui` depends on `visitors-service`, you need to start `visitors-service` container first. Follow [Run `visitors-service` server in Docker](../visitors-service/README.md#run-server-in-docker) and return here to continue.
+
+Then execute the command below to run the containerzed `visitors-webui` application in Docker.
+
+```
+docker run -it --rm -p 3000:3000 -e REACT_APP_BACKEND_HOST=172.17.0.2 -e REACT_APP_BACKEND_PORT=8000 -e REACT_APP_TITLE="Test Visitors WebUI Title" --name visitors-webui visitors-webui:1.0.0
+```
+
+Open `http://localhost:3000/` in your browser to visit the app. You should see `Test Visitors WebUI Title` displayed in the web page. Refreshing the page and you will see one entry with `172.17.0.2` as **Service IP** and `172.17.0.x` as **Client IP** added to the table. 
+
+## Stop the container
+
+To stop running the containerzed `visitors-webui` application, execute the command below in a separate CLI.
+
+```
+docker stop visitors-webui
+```
+
+Then follow [Stop `visitors-service` container](../visitors-service/README.md#stop-the-container) to stop backend container as well.
+
+## References
 
 * [github.com/jdob/visitors-webui](https://github.com/jdob/visitors-webui)
 * [Build a Node.js Proxy Server in Under 10 minutes!](https://www.twilio.com/blog/node-js-proxy-server)
 * [How to Set up a Node.js Express Server for React](https://www.section.io/engineering-education/how-to-setup-nodejs-express-for-react/)
 * [Install nvm, node.js, and npm](https://docs.microsoft.com/windows/dev-environment/javascript/nodejs-on-wsl#install-nvm-nodejs-and-npm)
+* [Understanding Docker Networking](https://earthly.dev/blog/docker-networking/)
