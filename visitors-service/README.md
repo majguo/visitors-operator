@@ -4,7 +4,7 @@ The code base of visitors service in this repo references https://github.com/jdo
 
 It's dependent by the visitors web ui which is located at [visitors-webui](../visitors-webui/).
 
-## Run in local
+## Run server in local
 
 To run `visitors-service` locally, following instructions below:
 
@@ -50,10 +50,30 @@ To run `visitors-service` locally, following instructions below:
    ./startup.sh
    ```
 
+   You will see the following message in the output, which indicates the server is successfully started:
+   
+   ```
+   Starting development server at http://0.0.0.0:8000/
    Quit the server with CONTROL-C.
+   ``` 
+
+1. Open `http://localhost:8000/visitors/` in the browser and you should see an empty array `[]` displayed in the page.
+
+## Stop server
+
+Follow steps below to stop server and quit the virtual environment.
+
+1. Press `CONTROL-C` to quit the server.
 
 1. Quit the virtual environment:
 
    ```
    deactivate
    ```
+
+## References
+
+* [github.com/jdob/visitors-service](https://github.com/jdob/visitors-service)
+* [Managing Multiple Versions of Python on Ubuntu 20.04](https://hackersandslackers.com/multiple-python-versions-ubuntu-20-04/)
+* [Install Python, pip, and venv](https://docs.microsoft.com/windows/python/web-frameworks#install-python-pip-and-venv)
+* 
