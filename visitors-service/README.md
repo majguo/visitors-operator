@@ -76,4 +76,3 @@ Follow steps below to stop server and quit the virtual environment.
 * [github.com/jdob/visitors-service](https://github.com/jdob/visitors-service)
 * [Managing Multiple Versions of Python on Ubuntu 20.04](https://hackersandslackers.com/multiple-python-versions-ubuntu-20-04/)
 * [Install Python, pip, and venv](https://docs.microsoft.com/windows/python/web-frameworks#install-python-pip-and-venv)
-* 
