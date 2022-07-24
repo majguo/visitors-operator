@@ -124,6 +124,12 @@ make docker-build docker-push IMG="<DockerHub-account>/visitors-operator"
 make deploy IMG="<DockerHub-account>/visitors-operator"
 ```
 
+Once you excuted the above commands, you can use `fast-deploy` target to only deploy operator next time.
+
+```
+make fast-deploy IMG="<DockerHub-account>/visitors-operator"
+```
+
 ## Deploy sample CR
 
 To verify if the operator works as expected, run the commands below to deploy the sample CR(s).
