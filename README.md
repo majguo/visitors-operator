@@ -121,7 +121,7 @@ Run the following to deploy the operator. This will also install the RBAC manife
 
 ```
 make docker-build docker-push IMG="<DockerHub-account>/visitors-operator"
-rm -rf bin/kustomize && make deploy IMG="<DockerHub-account>/visitors-operator"
+make deploy IMG="<DockerHub-account>/visitors-operator"
 ```
 
 ## Deploy sample CR
