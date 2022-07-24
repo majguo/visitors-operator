@@ -17,7 +17,7 @@ import (
 )
 
 const frontendPort = 3000
-const frontendImage = "majguo/visitors-webui:1.0.0"
+const defaultFrontendImage = "majguo/visitors-webui"
 
 func frontendDeploymentName(v *appsv1alpha1.VisitorsApp) string {
 	return v.Name + "-frontend"
@@ -27,9 +27,18 @@ func frontendServiceName(v *appsv1alpha1.VisitorsApp) string {
 	return v.Name + "-frontend-service"
 }
 
+func getFrontendImage(v *appsv1alpha1.VisitorsApp) string {
+	if v.Spec.FrontendImage != "" {
+		return v.Spec.FrontendImage
+	} else {
+		return defaultFrontendImage
+	}
+}
+
 func (r *VisitorsAppReconciler) frontendDeployment(v *appsv1alpha1.VisitorsApp) *appsv1.Deployment {
 	labels := labels(v, "frontend")
 	size := v.Spec.Size
+	frontendImage := getFrontendImage(v)
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -102,7 +111,7 @@ func (r *VisitorsAppReconciler) frontendService(v *appsv1alpha1.VisitorsApp) *co
 }
 
 func (r *VisitorsAppReconciler) updateFrontendStatus(v *appsv1alpha1.VisitorsApp) error {
-	v.Status.FrontendImage = frontendImage
+	v.Status.FrontendImage = getFrontendImage(v)
 	err := r.Status().Update(context.TODO(), v)
 	return err
 }
@@ -121,13 +130,18 @@ func (r *VisitorsAppReconciler) handleFrontendChanges(ctx context.Context, v *ap
 	}
 
 	title := v.Spec.Title
-	existing := found.Spec.Template.Spec.Containers[0].Env[0].Value
+	existingTitle := found.Spec.Template.Spec.Containers[0].Env[0].Value
 	size := v.Spec.Size
+	existingFrontendImage := found.Spec.Template.Spec.Containers[0].Image
+	specFrontendImage := getFrontendImage(v)
 
-	if title != existing || size != *found.Spec.Replicas {
+	if title != existingTitle || size != *found.Spec.Replicas || specFrontendImage != existingFrontendImage {
 		found.Spec.Template.Spec.Containers[0].Env[0].Value = title
 		found.Spec.Replicas = &size
-		logger.Info("Updating an existing frontend Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name, "Spec.Replicas", size, "Spec.Template.Spec.Containers[0].Env[0]", title)
+		found.Spec.Template.Spec.Containers[0].Image = specFrontendImage
+
+		logger.Info("Updating an existing frontend Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name,
+			"Spec.Replicas", size, "Spec.Template.Spec.Containers[0].Env[0]", title, "Spec.Template.Spec.Containers[0].Image", specFrontendImage)
 		err = r.Update(context.TODO(), found)
 		if err != nil {
 			logger.Error(err, "Failed to update Deployment.", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)

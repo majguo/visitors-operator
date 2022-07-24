@@ -16,7 +16,7 @@ import (
 )
 
 const backendPort = 8000
-const backendImage = "majguo/visitors-service:1.0.0"
+const defaultBackendImage = "majguo/visitors-service"
 
 func backendDeploymentName(v *appsv1alpha1.VisitorsApp) string {
 	return v.Name + "-backend"
@@ -26,9 +26,18 @@ func backendServiceName(v *appsv1alpha1.VisitorsApp) string {
 	return v.Name + "-backend-service"
 }
 
+func getBackendImage(v *appsv1alpha1.VisitorsApp) string {
+	if v.Spec.BackendImage != "" {
+		return v.Spec.BackendImage
+	} else {
+		return defaultBackendImage
+	}
+}
+
 func (r *VisitorsAppReconciler) backendDeployment(v *appsv1alpha1.VisitorsApp) *appsv1.Deployment {
 	labels := labels(v, "backend")
 	size := v.Spec.Size
+	backendImage := getBackendImage(v)
 
 	userSecret := &corev1.EnvVarSource{
 		SecretKeyRef: &corev1.SecretKeySelector{
@@ -123,7 +132,7 @@ func (r *VisitorsAppReconciler) backendService(v *appsv1alpha1.VisitorsApp) *cor
 }
 
 func (r *VisitorsAppReconciler) updateBackendStatus(v *appsv1alpha1.VisitorsApp) error {
-	v.Status.BackendImage = backendImage
+	v.Status.BackendImage = getBackendImage(v)
 	err := r.Status().Update(context.TODO(), v)
 	return err
 }
@@ -142,10 +151,15 @@ func (r *VisitorsAppReconciler) handleBackendChanges(ctx context.Context, v *app
 	}
 
 	size := v.Spec.Size
+	existingBackendImage := found.Spec.Template.Spec.Containers[0].Image
+	specBackendImage := getBackendImage(v)
 
-	if size != *found.Spec.Replicas {
+	if size != *found.Spec.Replicas || specBackendImage != existingBackendImage {
 		found.Spec.Replicas = &size
-		logger.Info("Updating an existing backend Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name, "Spec.Replicas", size)
+		found.Spec.Template.Spec.Containers[0].Image = specBackendImage
+
+		logger.Info("Updating an existing backend Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name,
+			"Spec.Replicas", size, "Spec.Template.Spec.Containers[0].Image", specBackendImage)
 		err = r.Update(context.TODO(), found)
 		if err != nil {
 			logger.Error(err, "Failed to update Deployment.", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)

@@ -35,6 +35,12 @@ spec:
           spec:
             description: VisitorsAppSpec defines the desired state of VisitorsApp
             properties:
+              backendImage:
+                description: The image and version used to deploy the backend pods
+                type: string
+              frontendImage:
+                description: The image and version used to deploy the frontend pods
+                type: string
               size:
                 description: Number of backend and frontend replicas to create
                 format: int32
@@ -44,7 +50,6 @@ spec:
                 type: string
             required:
             - size
-            - title
             type: object
           status:
             description: VisitorsAppStatus defines the observed state of VisitorsApp

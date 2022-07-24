@@ -32,7 +32,13 @@ type VisitorsAppSpec struct {
 	Size int32 `json:"size"`
 
 	// The text to display on the frontend web page
-	Title string `json:"title"`
+	Title string `json:"title,omitempty"`
+
+	// The image and version used to deploy the backend pods
+	BackendImage string `json:"backendImage,omitempty"`
+
+	// The image and version used to deploy the frontend pods
+	FrontendImage string `json:"frontendImage,omitempty"`
 }
 
 // VisitorsAppStatus defines the observed state of VisitorsApp
