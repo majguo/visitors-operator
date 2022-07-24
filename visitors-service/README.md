@@ -71,6 +71,14 @@ Follow steps below to stop server and quit the virtual environment.
    deactivate
    ```
 
+1. If your system installed other python version (e.g., python3.10), switch it back:
+
+   ```
+   update-alternatives --config python3
+   ```
+
+   Enter the specific number to switch back to python3.10.
+
 ## Run server in Docker
 
 Containerize the application so that it can run as a contanier in Docker or Kubernetes cluster.
