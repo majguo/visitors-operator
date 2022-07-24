@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: visitors-frontend
-          image: "majguo/visitors-webui:1.0.0"
+          image: "majguo/visitors-webui"
           imagePullPolicy: Always
           ports:
             - name: visitors
