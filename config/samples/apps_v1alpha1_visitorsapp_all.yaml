@@ -1,0 +1,9 @@
+apiVersion: apps.example.com/v1alpha1
+kind: VisitorsApp
+metadata:
+  name: visitorsapp-sample-all
+spec:
+  size: 3
+  title: "Custom Dashboard Title"
+  frontendImage: "majguo/visitors-webui:1.0.0"
+  backendImage: "majguo/visitors-service:1.0.0"
